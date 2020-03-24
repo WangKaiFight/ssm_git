@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wangkai.dao.IUserDao">
+
+    <resultMap id="userRole" type="User">
+        <id column="uid" property="uid"></id>
+        <result column="username" property="username"></result>
+        <result column="birthday" property="birthday"></result>
+        <result column="sex" property="sex"></result>
+        <result column="address" property="address"></result>
+        <result column="sal" property="sal"></result>
+        <association property="role" javaType="Role">
+            <id column="dept_id" property="deptId"></id>
+            <result column="role_name" property="roleName"></result>
+            <result column="role_desc" property="roleDesc"></result>
+        </association>
+    </resultMap>
+    <select id="selectAll" resultMap="userRole">
+        select u.uid,u.USERNAME,u.BIRTHDAY,u.SEX,u.address,u.SAL,r.ROLE_NAME,r.ROLE_DESC from users u LEFT JOIN role r on u.dept_id = r.dept_id ORDER BY u.UID
+    </select>
+
+    <select id="selectOne" parameterType="int" resultMap="userRole">
+        select u.uid,u.USERNAME,u.BIRTHDAY,u.SEX,u.address,u.SAL,r.ROLE_NAME,r.ROLE_DESC from users u LEFT JOIN role r on u.dept_id = r.dept_id where u.uid = #{uid}
+    </select>
+
+
+    <insert id="insertUser" parameterType="User">
+        insert into users(username,birthday,sex,address,sal,dept_id) values(#{username},#{birthday},#{sex},#{address},#{sal},#{deptId})
+    </insert>
+
+
+    <update id="updateUser" parameterType="User">
+        update users set username=#{username},birthday=#{birthday},sex=#{sex},address=#{address},sal=#{sal},dept_id=#{deptId} where uid = #{uid}
+    </update>
+
+
+    <delete id="deleteUser" parameterType="int">
+        delete from users where uid = #{uid}
+    </delete>
+
+
+
+    <select id="selectByCondition" parameterType="SearchCondition" resultMap="userRole">
+        select u.uid,u.USERNAME,u.BIRTHDAY,u.SEX,u.address,u.SAL,r.ROLE_NAME,r.ROLE_DESC
+        from users u LEFT JOIN role r on u.dept_id = r.dept_id
+        <where>
+            <if test="username != null and username != ''">
+                and u.USERNAME like CONCAT("%",#{username},"%")
+            </if>
+
+            <if test="startday != null and startday.toString() != '' ">
+                and u.BIRTHDAY > #{startday}
+            </if>
+
+            <if test="endday != null and endday.toString() != '' ">
+                and u.BIRTHDAY &lt; #{endday}
+            </if>
+
+            <if test="roleName != null and roleName != ''">
+                and r.role_name = #{roleName}
+            </if>
+
+            <if test="roleDesc != null and roleDesc != ''">
+                and r.role_desc = #{roleDesc}
+            </if>
+        </where>
+
+    </select>
+</mapper>

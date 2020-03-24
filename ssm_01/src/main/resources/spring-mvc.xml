@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        https://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/mvc
+        https://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:component-scan base-package="com.wangkai.controller"></context:component-scan>
+    <mvc:annotation-driven></mvc:annotation-driven>
+    <mvc:default-servlet-handler></mvc:default-servlet-handler>
+    <!--    配置视图解析器-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="prefix" value="/WEB-INF/"></property>
+        <property name="suffix" value=".jsp"></property>
+    </bean>
+
+    <bean id="conversionServiceFactoryBean" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <array>
+                <bean class="com.wangkai.utils.String2DateConverter"></bean>
+            </array>
+        </property>
+    </bean>
+    <bean id="conversionServiceFactoryBean1" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <array>
+                <bean class="com.wangkai.utils.String2DateConverter1"></bean>
+            </array>
+        </property>
+    </bean>
+    <!--启用自定义的转换服务-->
+    <mvc:annotation-driven conversion-service="conversionServiceFactoryBean"></mvc:annotation-driven>
+    <mvc:annotation-driven conversion-service="conversionServiceFactoryBean1"></mvc:annotation-driven>
+</beans>
